@@ -15,33 +15,36 @@ const userLogin = async (req,res) =>{
     
 
         console.log("password received "+req.body["password"] );
-        console.log("firstName received "+req.body["firstName"] );
-        console.log("lastName received "+req.body["lastName"] );
 
-        const userToLogin = await User.find({
-                                                'firstName':req.body["firstName"],
-                                                'lastName':req.body["lastName"]
-                                            });
+        const userToLogin =   await User.findOne({
+                                                    'firstName':req.body['firstName'],
+                                                    'lastName':req.body['lastName']
+                                                 });  //   await User.findById(req.body._id);
 
-        if (!userToLogin)
+        console.log("user to login infos : "+userToLogin);
+        if ( userToLogin == undefined || !userToLogin)
         {
             return res.json("user not found");
         }
-        else
+
+        console.log("password to check : "+req.body["password"]);
+        console.log("user to login infos : "+userToLogin.firstName);
+        console.log("user to login token : "+userToLogin['token']);
+        console.log("user to login salt  : "+userToLogin.salt);
+        console.log("user to login hash  : "+userToLogin.hash);
+
+        const token = decryptPassword(userToLogin,req.body["password"]) ;
+
+
+
+        if ( token === null)
         {
-            console.log("password to check : "+req.body["password"]);
-            console.log("user to login infos : "+userToLogin);
-
-            token = decryptPassword(userToLogin['token'],userToLogin['salt'],userToLogin['hash'],req.body["password"]) ;
-
-            if ( token === null)
-            {
-                return res.json("password is invalid");
-            }
-
-            return res.json(token);
-
+            return res.json("password is invalid");
         }
+
+        return res.json(token);
+
+        
         await userToUpdate.save();
         return res.json(userToUpdate);
 

@@ -6,6 +6,12 @@ async function userDelete(req,res){
             return res.json("id not found. Aborted");
         }
 
+        const userRole = req['role'] ;
+        if ( !userRole || userRole !== "admin")
+        {
+            return res.json("u dont have authorization to perform this operation. Aborted...");
+        }
+
         const User = req.app.get("models").User;
     
 

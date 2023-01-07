@@ -7,6 +7,12 @@ try{
         return res.json("no password. Aborted...");
     }
 
+    const userRole = req['role'] ;
+    if ( !userRole || userRole !== "admin")
+    {
+        return res.json("u dont have authorization to perform this operation. Aborted...");
+    }
+
     const body = req.body;
     console.log("password received "+body["password"]);
 
